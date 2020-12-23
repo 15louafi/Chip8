@@ -12,7 +12,7 @@ public:
     uint32_t display[64 * 32]{};
 
 private:
-    void ExecuteOpcode();
+    void ExecuteCycle();
 	// Do nothing
 	void OP_NULL();
 
@@ -126,5 +126,5 @@ private:
     uint8_t stackPointer{};
     uint8_t delayTimer{};
     uint8_t soundTimer{};
-    uint16_t opcode;
+    uint16_t opcode{};
 };
