@@ -12,7 +12,7 @@ public:
     uint32_t display[64 * 32]{};
 
 private:
-    void ExecuteCycle();
+    void ExecuteOpcode();
 	// Do nothing
 	void OP_NULL();
 
