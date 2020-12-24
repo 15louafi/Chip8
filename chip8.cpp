@@ -29,16 +29,50 @@ uint8_t fontset[FONTSET_SIZE] =
 };
 
 Chip8::Chip8() {
-    programCounter=0x200;
+    init();
+}
+
+// Initialise
+void Chip8::init() {
+    programCounter=START_ADDRESS;
+    opcode = 0;        // Reset op code
+    index = 0;          // Reset I
+    stackPointer = 0;        // Reset stack pointer
+
+    // Reset timers
+    delayTimer = 0;
+    soundTimer = 0;
+
+    // Clear the display
+    for (int i = 0; i < 2048; ++i) {
+        display[i] = 0;
+    }
+
+    // Clear the stack, keypad, and registers
+    for (int i = 0; i < 16; ++i) {
+        stack[i] = 0;
+        keyPad[i] = 0;
+        registers[i] = 0;
+    }
+
+    // Clear memory
+    for (int i = 0; i < 4096; ++i) {
+        memory[i] = 0;
+    }
+
+    // Load font set into memory
     for (unsigned int i = 0; i < FONTSET_SIZE; ++i)
     {
-        memory[FONTSET_START_ADDRESS+i]=fontset[i];
+        memory[FONTSET_START_ADDRESS+i] = fontset[i];
     }
+
+    //random seed for RNG's process
+    srand(time(NULL));
 }
 
 void Chip8::LoadROM(char const* filename)
 {
-    std::ifstream file(filename, std::ios::binary );
+    std::ifstream file(filename, std::ios::binary | std::ios::ate );
     if(file.is_open()) 
     {
         std::streampos size = file.tellg();
@@ -56,6 +90,7 @@ void Chip8::LoadROM(char const* filename)
 void Chip8::EmulateCycle() {
     opcode = memory[programCounter] << 8 | memory[programCounter + 1];  
 	programCounter += 2;
+    printf("\n opcode: %.4X\n", opcode);
 	ExecuteOpcode();
 	if (delayTimer > 0)
 	{
@@ -76,9 +111,10 @@ void Chip8::ExecuteOpcode() {
         case 0x0000:
 
             switch (opcode & 0x000F) {
+                case 0x0000:
                 // 00E0 - Clear screen
-                OP_00E0();
-				break;
+                    OP_00E0();
+				    break;
                 // 00EE - Return from subroutine
                 case 0x000E:
                     OP_00EE();

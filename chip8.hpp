@@ -11,8 +11,8 @@ const unsigned int VIDEO_WIDTH = 64;
 class Chip8
 {
 public:
-
 	Chip8();
+	void init();
 	void LoadROM(char const* filename);
 	void EmulateCycle();
 	uint8_t keyPad[16]{};
