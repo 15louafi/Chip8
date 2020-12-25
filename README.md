@@ -19,9 +19,7 @@ $ sudo apt-get install cmake libsdl2-dev
 Then, to compile the code, you need to run
 
 ```
-$ mkdir build
-$ cd build
-$ cmake ..
+$ cmake .
 $ make
 ```
 ## Running
