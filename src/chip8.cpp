@@ -112,7 +112,7 @@ void Chip8::ExecuteOpcode() {
             switch (opcode & 0x000F) {
                 case 0x0000:
                     OP_00E0();
-			        break;
+		    break;
                 case 0x000E:
                     OP_00EE();
                     break;
@@ -124,31 +124,31 @@ void Chip8::ExecuteOpcode() {
 
         case 0x1000:
             OP_1NNN();
-		    break;
+	    break;
 
         case 0x2000:
             OP_2NNN();
-		    break;
+	    break;
 
         case 0x3000:
             OP_3XKK();
-		    break;
+	    break;
 
         case 0x4000:
             OP_4XKK();
-		    break;
+	    break;
 
         case 0x5000:
             OP_5XY0();
-		    break;
+	    break;
 
         case 0x6000:
             OP_6XKK();
-		    break;
+	    break;
 
         case 0x7000:
             OP_7XKK();
-		    break;
+	    break;
 
         // 8XY_
         case 0x8000:
@@ -156,39 +156,39 @@ void Chip8::ExecuteOpcode() {
 
                 case 0x0000:
                     OP_8XY0();
-				    break;
+		    break;
 
                 case 0x0001:
                     OP_8XY1();
-				    break;
+		    break;
 
                 case 0x0002:
                     OP_8XY2();
-				    break;
+		    break;
 
                 case 0x0003:
                     OP_8XY3();
-				    break;
+		    break;
 
                 case 0x0004:
                     OP_8XY4();
-				    break;
+		    break;
 
                 case 0x0005:
                     OP_8XY5();
-				    break;
+		    break;
 
                 case 0x0006:
                     OP_8XY6();
-				    break;
+		    break;
 
                 case 0x0007:
                     OP_8XY7();
-				    break;
+		    break;
 
                 case 0x000E:
                     OP_8XYE();
-				    break;
+		    break;
 
                 default:
                     printf("\nUnknown op code: %.4X\n", opcode);
@@ -198,23 +198,23 @@ void Chip8::ExecuteOpcode() {
 
         case 0x9000:
             OP_9XY0();
-		    break;
+	    break;
 
         case 0xA000:
             OP_ANNN();
-		    break;
+	    break;
 
         case 0xB000:
             OP_BNNN();
-		    break;
+	    break;
 
         case 0xC000:
             OP_CXKK();
-		    break;
+	    break;
 
         case 0xD000:
             OP_DXYN();
-		    break;
+	    break;
 
         // EX__
         case 0xE000:
@@ -222,11 +222,11 @@ void Chip8::ExecuteOpcode() {
             switch (opcode & 0x00FF) {
                 case 0x009E:
                     OP_EX9E();
-				    break;
+		    break;
 
                 case 0x00A1:
                     OP_EXA1();
-				    break;
+		    break;
 
                 default:
                     printf("\nUnknown op code: %.4X\n", opcode);
@@ -240,39 +240,39 @@ void Chip8::ExecuteOpcode() {
             {
                 case 0x0007:
                     OP_FX07();
-				    break;
+		    break;
 
                 case 0x000A:
                     OP_FX0A();
-				    break;
+		    break;
 
                 case 0x0015:
                     OP_FX15();
-				    break;
+		    break;
 
                 case 0x0018:
                     OP_FX18();
-				    break;
+		    break;
 
                 case 0x001E:
                     OP_FX1E();
-				    break;
+		    break;
 
                 case 0x0029:
                     OP_FX29();
-				    break;
+		    break;
 
                 case 0x0033:
                     OP_FX33();
-				    break;
+		    break;
 
                 case 0x0055:
                     OP_FX55();
-				    break;
+		    break;
 
                 case 0x0065:
                     OP_FX65();
-				    break;
+		    break;
 
                 default:
                     printf ("Unknown opcode [0xF000]: 0x%X\n", opcode);
