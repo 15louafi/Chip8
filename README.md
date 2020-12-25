@@ -46,3 +46,7 @@ The CHIP-8 uses a 16-key keypad and is mapped to the following keys:
 * Add more commands for debugging (trigger verbose output)
 * Fix more bugs
 * Allow for window resizing
+
+## Ressources
+* [Cowgod's Chip-8 Technical Reference v1.0](http://devernay.free.fr/hacks/chip8/C8TECH10.HTM#Ex9E)
+* [CHIP-8 Wikipedia page](https://en.wikipedia.org/wiki/CHIP-8).
