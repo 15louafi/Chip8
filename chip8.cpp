@@ -35,9 +35,9 @@ Chip8::Chip8() {
 // Initialise
 void Chip8::init() {
     programCounter=START_ADDRESS;
-    opcode = 0;        // Reset op code
-    index = 0;          // Reset I
-    stackPointer = 0;        // Reset stack pointer
+    opcode = 0; // Reset op code
+    index = 0; // Reset index
+    stackPointer = 0; // Reset stack pointer
 
     // Reset timers
     delayTimer = 0;
