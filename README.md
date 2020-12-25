@@ -4,7 +4,10 @@ CHIP-8 is an interpreted programming language, developed by Joseph Weisbecker. I
 Code follows specs defined in [Cowgod's Chip-8 Technical Reference v1.0](http://devernay.free.fr/hacks/chip8/C8TECH10.HTM#Ex9E) and [CHIP-8 Wikipedia page](https://en.wikipedia.org/wiki/CHIP-8).
 
 ## Screenshots
+
 ![Space Invaders](https://raw.githubusercontent.com/15louafi/Chip8/main/screenshots/SpaceInvaders.png)
+
+
 ![Tetris](https://github.com/15louafi/Chip8/blob/main/screenshots/Tetris.png)
 
 ## Prerequisites
