@@ -2,7 +2,7 @@
 #include <random>
 #include <cstdint>
 #include <cstring>
-#include "Chip8.hpp"
+#include "chip8.hpp"
 
 const unsigned int START_ADDRESS = 0x200;
 const unsigned int FONTSET_SIZE = 80;
@@ -90,7 +90,6 @@ void Chip8::LoadROM(char const* filename)
 void Chip8::EmulateCycle() {
     opcode = memory[programCounter] << 8 | memory[programCounter + 1];  
 	programCounter += 2;
-    printf("\n opcode: %.4X\n", opcode);
 	ExecuteOpcode();
 	if (delayTimer > 0)
 	{
@@ -112,10 +111,8 @@ void Chip8::ExecuteOpcode() {
 
             switch (opcode & 0x000F) {
                 case 0x0000:
-                // 00E0 - Clear screen
                     OP_00E0();
 				    break;
-                // 00EE - Return from subroutine
                 case 0x000E:
                     OP_00EE();
                     break;
@@ -125,37 +122,30 @@ void Chip8::ExecuteOpcode() {
             }
             break;
 
-        // 1NNN - Jumps to address NNN
         case 0x1000:
             OP_1NNN();
 			break;
 
-        // 2NNN - Calls subroutine at NNN
         case 0x2000:
             OP_2NNN();
 			break;
 
-        // 3XNN - Skips the next instruction if VX equals NN.
         case 0x3000:
             OP_3XKK();
 			break;
 
-        // 4XNN - Skips the next instruction if VX does not equal NN.
         case 0x4000:
             OP_4XKK();
 			break;
 
-        // 5XY0 - Skips the next instruction if VX equals VY.
         case 0x5000:
             OP_5XY0();
 			break;
 
-        // 6XNN - Sets VX to NN.
         case 0x6000:
             OP_6XKK();
 			break;
 
-        // 7XNN - Adds NN to VX.
         case 0x7000:
             OP_7XKK();
 			break;
@@ -164,52 +154,38 @@ void Chip8::ExecuteOpcode() {
         case 0x8000:
             switch (opcode & 0x000F) {
 
-                // 8XY0 - Sets VX to the value of VY.
                 case 0x0000:
                     OP_8XY0();
 					break;
 
-                // 8XY1 - Sets VX to (VX OR VY).
                 case 0x0001:
                     OP_8XY1();
 					break;
 
-                // 8XY2 - Sets VX to (VX AND VY).
                 case 0x0002:
                     OP_8XY2();
 					break;
 
-                // 8XY3 - Sets VX to (VX XOR VY).
                 case 0x0003:
                     OP_8XY3();
 					break;
 
-                // 8XY4 - Adds VY to VX. VF is set to 1 when there's a carry,
-                // and to 0 when there isn't.
                 case 0x0004:
                     OP_8XY4();
 					break;
 
-                // 8XY5 - VY is subtracted from VX. VF is set to 0 when
-                // there's a borrow, and 1 when there isn't.
                 case 0x0005:
                     OP_8XY5();
 					break;
 
-                // 0x8XY6 - Shifts VX right by one. VF is set to the value of
-                // the least significant bit of VX before the shift.
                 case 0x0006:
                     OP_8XY6();
 					break;
 
-                // 0x8XY7: Sets VX to VY minus VX. VF is set to 0 when there's
-                // a borrow, and 1 when there isn't.
                 case 0x0007:
                     OP_8XY7();
 					break;
 
-                // 0x8XYE: Shifts VX left by one. VF is set to the value of
-                // the most significant bit of VX before the shift.
                 case 0x000E:
                     OP_8XYE();
 					break;
@@ -220,33 +196,22 @@ void Chip8::ExecuteOpcode() {
             }
             break;
 
-        // 9XY0 - Skips the next instruction if VX doesn't equal VY.
         case 0x9000:
             OP_9XY0();
 			break;
 
-        // ANNN - Sets I to the address NNN.
         case 0xA000:
             OP_ANNN();
 			break;
 
-        // BNNN - Jumps to the address NNN plus V0.
         case 0xB000:
             OP_BNNN();
 			break;
 
-        // CXNN - Sets VX to a random number, masked by NN.
         case 0xC000:
             OP_CXKK();
 			break;
 
-        // DXYN: Draws a sprite at coordinate (VX, VY) that has a width of 8
-        // pixels and a height of N pixels.
-        // Each row of 8 pixels is read as bit-coded starting from memory
-        // location I;
-        // I value doesn't change after the execution of this instruction.
-        // VF is set to 1 if any screen pixels are flipped from set to unset
-        // when the sprite is drawn, and to 0 if that doesn't happen.
         case 0xD000:
             OP_DXYN();
 			break;
@@ -255,14 +220,10 @@ void Chip8::ExecuteOpcode() {
         case 0xE000:
 
             switch (opcode & 0x00FF) {
-                // EX9E - Skips the next instruction if the key stored
-                // in VX is pressed.
                 case 0x009E:
                     OP_EX9E();
 					break;
 
-                // EXA1 - Skips the next instruction if the key stored
-                // in VX isn't pressed.
                 case 0x00A1:
                     OP_EXA1();
 					break;
@@ -277,45 +238,34 @@ void Chip8::ExecuteOpcode() {
         case 0xF000:
             switch(opcode & 0x00FF)
             {
-                // FX07 - Sets VX to the value of the delay timer
                 case 0x0007:
                     OP_FX07();
 					break;
 
-                // FX0A - A key press is awaited, and then stored in VX
                 case 0x000A:
                     OP_FX0A();
 					break;
 
-                // FX15 - Sets the delay timer to VX
                 case 0x0015:
                     OP_FX15();
 					break;
 
-                // FX18 - Sets the sound timer to VX
                 case 0x0018:
                     OP_FX18();
 					break;
 
-                // FX1E - Adds VX to I
                 case 0x001E:
                     OP_FX1E();
 					break;
 
-                // FX29 - Sets I to the location of the sprite for the
-                // character in VX. Characters 0-F (in hexadecimal) are
-                // represented by a 4x5 font
                 case 0x0029:
                     OP_FX29();
 					break;
 
-                // FX33 - Stores the Binary-coded decimal representation of VX
-                // at the addresses I, I plus 1, and I plus 2
                 case 0x0033:
                     OP_FX33();
 					break;
 
-                // FX55 - Stores V0 to VX in memory starting at address I
                 case 0x0055:
                     OP_FX55();
 					break;
@@ -335,24 +285,27 @@ void Chip8::ExecuteOpcode() {
 }
 }
 
-
+// 00E0 - Clear screen
 void Chip8::OP_00E0()
 {
 	memset(display, 0, sizeof(display));
 }
 
+// 00EE - Return from subroutine
 void Chip8::OP_00EE()
 {
 	--stackPointer;
 	programCounter = stack[stackPointer];
 }
 
+// 1NNN - Jumps to address NNN
 void Chip8::OP_1NNN()
 {
     uint16_t counter = opcode & 0x0FFFu;
     programCounter = counter;
 }
 
+// 2NNN - Calls subroutine at NNN
 void Chip8::OP_2NNN()
 {
     uint16_t counter = opcode & 0x0FFFu;
@@ -361,6 +314,7 @@ void Chip8::OP_2NNN()
 	programCounter = counter;
 }
 
+// 3XNN - Skips the next instruction if VX equals NN.
 void Chip8::OP_3XKK()
 {
     uint8_t Vx = (opcode & 0x0F00u) >> 8u;
@@ -370,6 +324,7 @@ void Chip8::OP_3XKK()
     }
 }
 
+// 4XKK - Skips the next instruction if VX does not equal KK.
 void Chip8::OP_4XKK()
 {
     uint8_t Vx = (opcode & 0x0F00u) >> 8u;
@@ -379,6 +334,7 @@ void Chip8::OP_4XKK()
     }
 }
 
+// 5XY0 - Skips the next instruction if VX equals VY.
 void Chip8::OP_5XY0()
 {
     uint8_t Vx = (opcode & 0x0F00u) >> 8u;
@@ -388,6 +344,7 @@ void Chip8::OP_5XY0()
     }
 }
 
+// 6XNN - Sets VX to NN.
 void Chip8::OP_6XKK()
 {
     uint8_t Vx = (opcode & 0x0F00u) >> 8u;
@@ -395,6 +352,7 @@ void Chip8::OP_6XKK()
     registers[Vx] = value;
 }
 
+// 7XNN - Adds NN to VX.
 void Chip8::OP_7XKK()
 {
     uint8_t Vx = (opcode & 0x0F00u) >> 8u;
@@ -402,6 +360,7 @@ void Chip8::OP_7XKK()
     registers[Vx] += value;
 }
 
+// 8XY0 - Sets VX to the value of VY.
 void Chip8::OP_8XY0()
 {
     uint8_t Vx = (opcode & 0x0F00u) >> 8u;
@@ -409,6 +368,7 @@ void Chip8::OP_8XY0()
     registers[Vx] = registers[Vy];
 }
 
+// 8XY1 - Sets VX to (VX OR VY).
 void Chip8::OP_8XY1()
 {
     uint8_t Vx = (opcode & 0x0F00u) >> 8u;
@@ -416,6 +376,7 @@ void Chip8::OP_8XY1()
     registers[Vx] |= registers[Vy];
 }
 
+// 8XY2 - Sets VX to (VX AND VY).
 void Chip8::OP_8XY2()
 {
     uint8_t Vx = (opcode & 0x0F00u) >> 8u;
@@ -423,6 +384,7 @@ void Chip8::OP_8XY2()
     registers[Vx] &= registers[Vy];
 }
 
+// 8XY3 - Sets VX to (VX XOR VY).
 void Chip8::OP_8XY3()
 {
     uint8_t Vx = (opcode & 0x0F00u) >> 8u;
@@ -430,6 +392,8 @@ void Chip8::OP_8XY3()
     registers[Vx] ^= registers[Vy];
 }
 
+// 8XY4 - Adds VY to VX. VF is set to 1 when there's a carry,
+// and to 0 when there isn't.
 void Chip8::OP_8XY4()
 {
     uint8_t Vx = (opcode & 0x0F00u) >> 8u;
@@ -444,6 +408,8 @@ void Chip8::OP_8XY4()
     registers[Vx] = result & (0xFFu);
 }
 
+// 8XY5 - VY is subtracted from VX. VF is set to 0 when
+// there's a borrow, and 1 when there isn't.
 void Chip8::OP_8XY5()
 {
     uint8_t Vx = (opcode & 0x0F00u) >> 8u;
@@ -460,6 +426,8 @@ void Chip8::OP_8XY5()
 	registers[Vx] -= registers[Vy];
 }
 
+// 0x8XY6 - Shifts VX right by one. VF is set to the value of
+// the least significant bit of VX before the shift.
 void Chip8::OP_8XY6()
 {
     uint8_t Vx = (opcode & 0x0F00u) >> 8u;
@@ -467,6 +435,8 @@ void Chip8::OP_8XY6()
     registers[Vx] >>= 1;
 }
 
+// 0x8XY7: Sets VX to VY minus VX. VF is set to 0 when there's
+// a borrow, and 1 when there isn't.
 void Chip8::OP_8XY7()
 {
     uint8_t Vx = (opcode & 0x0F00u) >> 8u;
@@ -482,6 +452,8 @@ void Chip8::OP_8XY7()
     registers[Vx] = registers[Vy] - registers[Vx];
 }
 
+// 0x8XYE: Shifts VX left by one. VF is set to the value of
+// the most significant bit of VX before the shift.
 void Chip8::OP_8XYE()
 {
     uint8_t Vx = (opcode & 0x0F00u) >> 8u;
@@ -489,6 +461,7 @@ void Chip8::OP_8XYE()
     registers[Vx] <<= 1;
 }
 
+// 9XY0 - Skips the next instruction if VX doesn't equal VY.
 void Chip8::OP_9XY0()
 {
     uint8_t Vx = (opcode & 0x0F00u) >> 8u;
@@ -499,18 +472,21 @@ void Chip8::OP_9XY0()
 	}
 }
 
+// ANNN - Sets I to the address NNN.
 void Chip8::OP_ANNN()
 {
-    uint8_t value = (opcode & 0x0FFFu);
+    uint16_t value = (opcode & 0x0FFFu);
     index = value;
 }
 
+// BNNN - Jumps to the address NNN plus V0.
 void Chip8::OP_BNNN()
 {
     uint8_t value = (opcode & 0x0FFFu);
     programCounter = registers[0] + value;
 }
 
+// CXNN - Sets VX to a random number, masked by NN.
 void Chip8::OP_CXKK()
 {
     uint8_t Vx = (opcode & 0x0F00u) >> 8u;
@@ -518,6 +494,13 @@ void Chip8::OP_CXKK()
     registers[Vx] = (rand() % (0xFF + 1)) & value;
 }
 
+// DXYN: Draws a sprite at coordinate (VX, VY) that has a width of 8
+// pixels and a height of N pixels.
+// Each row of 8 pixels is read as bit-coded starting from memory
+// location I;
+// I value doesn't change after the execution of this instruction.
+// VF is set to 1 if any screen pixels are flipped from set to unset
+// when the sprite is drawn, and to 0 if that doesn't happen. 
 void Chip8::OP_DXYN()
 {
 	uint8_t Vx = (opcode & 0x0F00u) >> 8u;
@@ -525,36 +508,31 @@ void Chip8::OP_DXYN()
 	uint8_t height = opcode & 0x000Fu;
 
 	// Wrap if going beyond screen boundaries
-	uint8_t xPos = registers[Vx] % VIDEO_WIDTH;
-	uint8_t yPos = registers[Vy] % VIDEO_HEIGHT;
+	uint8_t xPos = registers[Vx];
+	uint8_t yPos = registers[Vy];
 
 	registers[0xF] = 0;
 
-	for (unsigned int row = 0; row < height; ++row)
-	{
-		uint8_t spriteByte = memory[index + row];
+	for (int yline = 0; yline < height; yline++)
+            {
+                uint8_t pixel = memory[index + yline];
 
-		for (unsigned int col = 0; col < 8; ++col)
-		{
-			uint8_t spritePixel = spriteByte & (0x80u >> col);
-			uint32_t* screenPixel = &display[(yPos + row) * VIDEO_WIDTH + (xPos + col)];
-
-			// sprite pixel is on
-			if (spritePixel)
-			{
-				// Screen pixel also on - collision
-				if (*screenPixel == 0xFFFFFFFF)
-				{
-					registers[0xF] = 1;
-				}
-
-				// Effectively XOR with the sprite pixel
-				*screenPixel ^= 0xFFFFFFFF;
-			}
-		}
-	}
+                for(int xline = 0; xline < 8; xline++)
+                {
+                    if((pixel & (0x80 >> xline)) != 0)
+                    {
+                        if(display[(xPos + xline + ((yPos + yline) * 64))] == 1)
+                        {
+                            registers[0xF] = 1;
+                        }
+                        display[xPos + xline + ((yPos + yline) * 64)] ^= 1;
+                    }
+                }
+            }
 }
 
+// EX9E - Skips the next instruction if the key stored
+// in VX is pressed.
 void Chip8::OP_EX9E()
 {
     uint8_t Vx = (opcode & 0x0F00u) >> 8u;
@@ -565,6 +543,8 @@ void Chip8::OP_EX9E()
     }
 }
 
+// EXA1 - Skips the next instruction if the key stored
+// in VX isn't pressed.
 void Chip8::OP_EXA1()
 {
     uint8_t Vx = (opcode & 0x0F00u) >> 8u;
@@ -575,6 +555,7 @@ void Chip8::OP_EXA1()
     }
 }
 
+// FX07 - Sets VX to the value of the delay timer
 void Chip8::OP_FX07()
 {
     uint8_t Vx = (opcode & 0x0F00u) >> 8u;
@@ -582,6 +563,7 @@ void Chip8::OP_FX07()
     registers[Vx] = delayTimer;
 }
 
+// FX0A - A key press is awaited, and then stored in VX
 void Chip8::OP_FX0A()
 {
     uint8_t Vx = (opcode & 0x0F00u) >> 8u;
@@ -656,6 +638,7 @@ void Chip8::OP_FX0A()
 	}
 }
 
+// FX15 - Sets the delay timer to VX
 void Chip8::OP_FX15()
 {
     uint8_t Vx = (opcode & 0x0F00u) >> 8u;
@@ -663,6 +646,7 @@ void Chip8::OP_FX15()
     delayTimer = registers[Vx];
 }
 
+// FX18 - Sets the sound timer to VX
 void Chip8::OP_FX18()
 {
     uint8_t Vx = (opcode & 0x0F00u) >> 8u;
@@ -670,12 +654,16 @@ void Chip8::OP_FX18()
     soundTimer = registers[Vx];
 }
 
+// FX1E - Adds VX to I
 void Chip8::OP_FX1E()
 {
     uint8_t Vx = (opcode & 0x0F00u) >> 8u;
     index += registers[Vx];
 }
 
+// FX29 - Sets I to the location of the sprite for the
+// character in VX. Characters 0-F (in hexadecimal) are
+// represented by a 4x5 font
 void Chip8::OP_FX29()
 {
     uint8_t Vx = (opcode & 0x0F00u) >> 8u;
@@ -683,11 +671,13 @@ void Chip8::OP_FX29()
 	index = FONTSET_START_ADDRESS + (5 * digit);
 }
 
+// FX33 - Stores the Binary-coded decimal representation of VX
+// at the addresses I, I plus 1, and I plus 2
 void Chip8::OP_FX33()
 {
     uint8_t Vx = (opcode & 0x0F00u) >> 8u;
     uint8_t value = registers[Vx];
-	// Ones-place
+		// Ones-place
 	memory[index + 2] = value % 10;
 	value /= 10;
 
@@ -697,21 +687,24 @@ void Chip8::OP_FX33()
 
 	// Hundreds-place
 	memory[index] = value % 10;
+
 }
 
+// FX55 - Stores V0 to VX in memory starting at address I            
 void Chip8::OP_FX55()
 {
     uint8_t Vx = (opcode & 0x0F00u) >> 8u;
-	for (unsigned int i =0; i<= Vx;++i)
+	for (uint8_t i =0; i<= Vx;++i)
     {
         memory[index +i] = registers[i]; 
     }
 }
 
+// FX65 - Reads V0 to VX in memory starting at address I   
 void Chip8::OP_FX65()
 {
     uint8_t Vx = (opcode & 0x0F00u) >> 8u;
-	for (unsigned int i =0; i<= Vx;++i)
+	for (uint8_t i =0; i<= Vx;++i)
     {
         registers[i]= memory[index +i]; 
     }
