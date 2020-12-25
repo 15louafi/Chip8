@@ -42,6 +42,7 @@ The CHIP-8 uses a 16-key keypad and is mapped to the following keys:
      
 ## Work in progress
 * Implement sound
+* Add unit tests
 * Add more commands for debugging (trigger verbose output)
 * Fix more bugs
 * Allow for window resizing
