@@ -677,17 +677,10 @@ void Chip8::OP_FX33()
 {
     uint8_t Vx = (opcode & 0x0F00u) >> 8u;
     uint8_t value = registers[Vx];
-		// Ones-place
-	memory[index + 2] = value % 10;
-	value /= 10;
 
-	// Tens-place
-	memory[index + 1] = value % 10;
-	value /= 10;
-
-	// Hundreds-place
-	memory[index] = value % 10;
-
+	 memory[index] = Vx % 1000 / 100;
+    memory[index + 1] = Vx % 100 / 10;
+    memory[index + 2] = Vx % 10;
 }
 
 // FX55 - Stores V0 to VX in memory starting at address I            
