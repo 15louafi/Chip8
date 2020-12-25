@@ -3,6 +3,13 @@ CHIP-8 emulator written in C++ with SDL.
 CHIP-8 is an interpreted programming language, developed by Joseph Weisbecker. It was initially used on the COSMAC VIP and Telmac 1800 8-bit microcomputers in the mid-1970s. CHIP-8 programs are run on a CHIP-8 virtual machine. It was made to allow video games to be more easily programmed for these computers. 
 Code follows specs defined in [Cowgod's Chip-8 Technical Reference v1.0](http://devernay.free.fr/hacks/chip8/C8TECH10.HTM#Ex9E) and [CHIP-8 Wikipedia page](https://en.wikipedia.org/wiki/CHIP-8).
 
+## Screenshots
+
+![Space Invaders](https://raw.githubusercontent.com/15louafi/Chip8/main/screenshots/SpaceInvaders.png)
+
+
+![Tetris](https://github.com/15louafi/Chip8/blob/main/screenshots/Tetris.png)
+
 ## Prerequisites
 * C++ compiler
 * SDL2
