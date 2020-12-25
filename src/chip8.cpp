@@ -77,7 +77,7 @@ void Chip8::LoadROM(char const* filename)
     {
         std::streampos size = file.tellg();
         file.seekg(0, std::ios::beg);
-		char* buffer = new char[size];
+        char* buffer = new char[size];
         file.read (buffer,size);
         file.close();
         for (long i =0; i<size; ++i) {
