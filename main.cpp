@@ -1,11 +1,12 @@
 #include <chrono>
 #include <iostream>
+#include <thread>
 #include "chip8.hpp"
 #include "display.hpp"
 #include <SDL2/SDL.h>
 
-const unsigned int WINDOW_HEIGHT = 1024;
-const unsigned int WINDOW_WIDTH = 512;
+const unsigned int WINDOW_WIDTH = 1024;
+const unsigned int WINDOW_HEIGHT = 512;
 
 bool ProcessKeys(uint8_t* keys)
 {
@@ -241,40 +242,32 @@ bool ProcessKeys(uint8_t* keys)
 
 int main(int argc, char** argv)
 {
-	if (argc != 3)
+	if (argc != 2)
 	{
-		std::cerr << "Usage: " << argv[0] << " <Delay> <ROM>\n";
+		std::cerr << "Usage: " << argv[0] << " <ROM>\n";
 		std::exit(EXIT_FAILURE);
 	}
 
-	int cycleDelay = std::stoi(argv[1]);
-	char const* romFilename = argv[2];
+	char const* romFilename = argv[1];
 
-	Display display("CHIP-8 Emulator", WINDOW_HEIGHT, WINDOW_WIDTH, DISPLAY_WIDTH, DISPLAY_HEIGHT);
+	Display display("CHIP-8 Emulator", WINDOW_WIDTH, WINDOW_HEIGHT, DISPLAY_WIDTH, DISPLAY_HEIGHT);
 
 	Chip8 chip8 = Chip8();
 	chip8.LoadROM(romFilename);
 
 	int videoPitch = sizeof(chip8.display[0]) * DISPLAY_WIDTH;
 
-	auto lastCycleTime = std::chrono::high_resolution_clock::now();
 	bool quitKeyPressed = false;
 
 	while (!quitKeyPressed)
 	{
 		quitKeyPressed = ProcessKeys(chip8.keyPad);
 
-		auto currentTime = std::chrono::high_resolution_clock::now();
-		float dt = std::chrono::duration<float, std::chrono::milliseconds::period>(currentTime - lastCycleTime).count();
+		chip8.EmulateCycle();
 
-		if (dt > cycleDelay)
-		{
-			lastCycleTime = currentTime;
+		display.Update(chip8.display, videoPitch);
 
-			chip8.EmulateCycle();
-
-			display.Update(chip8.display, videoPitch);
-		}
+		std::this_thread::sleep_for(std::chrono::microseconds(1200));
 	}
 
 	return 0;
