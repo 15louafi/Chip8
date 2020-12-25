@@ -5,8 +5,8 @@ const unsigned int KEY_COUNT = 16;
 const unsigned int MEMORY_SIZE = 4096;
 const unsigned int REGISTER_COUNT = 16;
 const unsigned int STACK_LEVELS = 16;
-const unsigned int VIDEO_HEIGHT = 32;
-const unsigned int VIDEO_WIDTH = 64;
+const unsigned int DISPLAY_HEIGHT = 32;
+const unsigned int DISPLAY_WIDTH = 64;
 
 class Chip8
 {
@@ -16,7 +16,7 @@ public:
 	void LoadROM(char const* filename);
 	void EmulateCycle();
 	uint8_t keyPad[16]{};
-    uint32_t display[64 * 32]{};
+    uint32_t display[DISPLAY_HEIGHT * DISPLAY_WIDTH]{};
 
 private:
     void ExecuteOpcode();
